@@ -44,8 +44,10 @@ export default function (downloadService, searchService, options, client) {
 
     this.client.download(data, (err, down) => {
       if (err) {
-        log(chalk.red(err));
-        process.exit();
+        log(chalk.red(`${filename}: ${err}`));
+        this.downloadService.decrementFileCount();
+        this.downloadService.everyDownloadCompleted();
+        return;
       }
 
       this.downloadService.downloadComplete(down.path);
