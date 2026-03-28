@@ -7,7 +7,7 @@ const log = console.log;
 
 export default function (searchService, downloadService, options, client) {
   this.download = new Download(downloadService, searchService, options, client);
-  this.filterResult = new FilterResult(options.quality, options.mode);
+  this.filterResult = new FilterResult(options.quality, options.mode, options.size);
   this.searchService = searchService;
   this.downloadService = downloadService;
   this.client = client;

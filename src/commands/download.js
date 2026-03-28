@@ -25,6 +25,11 @@ class DownloadCommand {
       process.exit(1);
     }
 
+    if (options.size && !/^([<>]=?|=)\d+(?:\.\d+)?(b|kb|mb|gb)$/i.test(options.size)) {
+      log(chalk.red('--size is invalid. Expected format: <operator><value><unit>, e.g. "<5gb", ">=100mb"'));
+      process.exit(1);
+    }
+
     this.options = options;
     this.searchService = new SearchService(queries);
     this.downloadService = new DownloadService(this.searchService);

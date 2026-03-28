@@ -15,6 +15,7 @@ program
   .option('-d, --destination <folder>', 'downloads\'s destination')
   .option('-q, --quality <quality>', 'show only mp3 with a defined quality')
   .option('-m, --mode <mode>', 'filter the kind of files you want (available: "audio", "video", "mp3", "flac", "mp4", "mkv", default: "audio")', 'audio')
+  .option('-s, --size <size>', 'filter by total folder size, e.g. "<5gb", ">=100mb"')
   .alias('d')
   .action((queries, options) => {
     new DownloadCommand(queries, options);
@@ -25,6 +26,7 @@ program
   .description('Search with required query, but don\'t download anything')
   .option('-q, --quality <quality>', 'show only mp3 with a defined quality')
   .option('-m, --mode <mode>', 'filter the kind of files you want (available: "audio", "video", "mp3", "flac", "mp4", "mkv", default: "audio")', 'audio')
+  .option('-s, --size <size>', 'filter by total folder size, e.g. "<5gb", ">=100mb"')
   .alias('q')
   .action((queries, options) => {
     new QueryCommand(queries, options);

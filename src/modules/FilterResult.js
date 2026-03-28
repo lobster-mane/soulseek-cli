@@ -2,9 +2,10 @@ import path from 'path';
 import _ from 'lodash';
 const pluralize = (noun, count, suffix = 's') => `${count} ${noun}${count !== 1 ? suffix : ''}`;
 
-export default function (qualityFilter, mode) {
+export default function (qualityFilter, mode, sizeFilter) {
   this.qualityFilter = qualityFilter;
   this.mode = mode;
+  this.sizeFilter = sizeFilter ? parseSizeFilter(sizeFilter) : null;
 
   /**
    * From the query results, only get mp3 with free slots.
@@ -31,9 +32,47 @@ export default function (qualityFilter, mode) {
     }
 
     res = sortBySpeed(res);
-    return getFilesByUser(res);
+    let filesByUser = getFilesByUser(res);
+
+    if (this.sizeFilter) {
+      filesByUser = filterBySize(this.sizeFilter, filesByUser);
+    }
+
+    return filesByUser;
   };
 }
+
+const SIZE_UNITS = { b: 1, kb: 1024, mb: 1024 ** 2, gb: 1024 ** 3 };
+const SIZE_PATTERN = /^([<>]=?|=)(\d+(?:\.\d+)?)(b|kb|mb|gb)$/i;
+
+/**
+ * Parse a size filter string like '<5gb' into an operator and byte value
+ * @param {string} sizeStr
+ * @returns {{ operator: string, bytes: number } | null}
+ */
+let parseSizeFilter = (sizeStr) => {
+  const match = sizeStr.match(SIZE_PATTERN);
+  if (!match) return null;
+  const bytes = parseFloat(match[2]) * SIZE_UNITS[match[3].toLowerCase()];
+  return { operator: match[1], bytes };
+};
+
+/**
+ * Filter grouped results by total folder size
+ * @param {{ operator: string, bytes: number }} sizeFilter
+ * @param {object} filesByUser
+ * @returns {object}
+ */
+let filterBySize = (sizeFilter, filesByUser) => {
+  const { operator, bytes } = sizeFilter;
+  const ops = { '<': (a, b) => a < b, '>': (a, b) => a > b, '<=': (a, b) => a <= b, '>=': (a, b) => a >= b, '=': (a, b) => a === b };
+  return Object.fromEntries(
+    Object.entries(filesByUser).filter(([, files]) => {
+      const totalBytes = files.reduce((sum, f) => sum + f.size, 0);
+      return ops[operator](totalBytes, bytes);
+    })
+  );
+};
 
 /**
  * Discard all results without free slots
