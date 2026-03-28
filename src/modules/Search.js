@@ -108,18 +108,27 @@ export default function (searchService, downloadService, options, client) {
    * @param {array} filesByUser
    */
   this.showResults = (filesByUser) => {
-    const numResults = Object.keys(filesByUser).length;
+    const choices = _.keys(filesByUser);
 
-    log(chalk.green('Displaying ' + numResults + ' search results'));
+    log(chalk.green('Displaying ' + choices.length + ' search results'));
+    choices.forEach((choice, index) => log(chalk.blue('%d) %s'), index + 1, choice));
 
-    const options = {
-      type: 'rawlist',
-      name: 'user',
-      pageSize: 10,
-      message: 'Choose a folder to download',
-      choices: _.keys(filesByUser),
+    const prompt = {
+      type: 'input',
+      name: 'selection',
+      message: 'Choose a folder to download (q to quit)',
+      validate: (input) => {
+        if (input.toLowerCase() === 'q') return true;
+        const num = parseInt(input, 10);
+        if (!isNaN(num) && num >= 1 && num <= choices.length) return true;
+        return `Please enter a number between 1 and ${choices.length}, or q to quit`;
+      },
     };
-    inquirer.prompt([options]).then((answers) => this.processChosenAnswers(answers, filesByUser));
+
+    inquirer.prompt([prompt]).then((answers) => {
+      if (answers.selection.toLowerCase() === 'q') process.exit(0);
+      this.processChosenAnswers({ user: choices[parseInt(answers.selection, 10) - 1] }, filesByUser);
+    });
   };
 
   /**
