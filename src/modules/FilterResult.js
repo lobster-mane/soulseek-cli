@@ -24,6 +24,14 @@ export default function (qualityFilter, mode) {
       res = keepOnlyFlac(res);
     }
 
+    if (this.mode === 'mp4') {
+      res = keepOnlyMp4(res);
+    }
+
+    if (this.mode === 'mkv') {
+      res = keepOnlyMkv(res);
+    }
+
     if (this.qualityFilter) {
       res = filterByQuality(this.qualityFilter, res);
     }
@@ -53,6 +61,20 @@ let keepOnlyMp3 = (res) => res.filter((r) => path.extname(r.file) === '.mp3');
  * @returns {array}
  */
 let keepOnlyFlac = (res) => res.filter((r) => path.extname(r.file) === '.flac');
+
+/**
+ * Remove everything that is not a mp4
+ * @param {array} res
+ * @returns {array}
+ */
+let keepOnlyMp4 = (res) => res.filter((r) => path.extname(r.file) === '.mp4');
+
+/**
+ * Remove everything that is not a mkv
+ * @param {array} res
+ * @returns {array}
+ */
+let keepOnlyMkv = (res) => res.filter((r) => path.extname(r.file) === '.mkv');
 
 /**
  * If a quality filter is defined, keep only the folders with the defined bitrate
