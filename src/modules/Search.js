@@ -110,10 +110,9 @@ export default function (searchService, downloadService, options, client) {
   this.showResults = (filesByUser) => {
     const choices = _.keys(filesByUser);
 
-    if (this.verbose) {
-      log(chalk.green('Displaying ' + choices.length + ' search results'));
-      choices.forEach((choice, index) => log(chalk.blue('%d) %s'), index + 1, choice));
-    }
+    const visible = this.verbose ? choices : choices.slice(0, 10);
+    log(chalk.green('Displaying ' + visible.length + (choices.length > visible.length ? ' of ' + choices.length : '') + ' search results'));
+    visible.forEach((choice, index) => log(chalk.blue('%d) %s'), index + 1, choice));
 
     const prompt = {
       type: 'input',
