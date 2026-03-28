@@ -19,7 +19,6 @@
     "keytar": "^7.9.0",
     "lodash": "^4.17.21",
     "path": "^0.12.7",
-    "patch-package": "^8.0.1",
     "slsk-client": "^1.1.0"
   },
   "devDependencies": {
@@ -32,7 +31,7 @@
     "prettier": "^3.4.2"
   },
   "scripts": {
-    "postinstall": "patch-package",
+    "postinstall": "node scripts/postinstall.mjs",
     "bump": "node scripts/bump.js",
     "lint:editorconfig": "editorconfig-checker",
     "lint:eslint": "eslint src/** cli.js",
