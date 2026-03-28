@@ -71,9 +71,12 @@ module.exports = (host, port, token, user, noPierce) => {
       lastReportedStep = step
       const bar = buildBar(step)
       const suffix = ' [' + step + '%]'
-      const cols = process.stdout.columns || 80
-      const maxNameLen = cols - bar.length - suffix.length - 2
-      const name = fileName.length > maxNameLen ? fileName.slice(0, maxNameLen - 1) + '…' : fileName
+      let name = fileName
+      if (process.stdout.isTTY) {
+        const cols = process.stdout.columns || 80
+        const maxNameLen = cols - bar.length - suffix.length - 2
+        if (name.length > maxNameLen) name = name.slice(0, maxNameLen - 1) + '…'
+      }
       process.stdout.write('\r\x1b[2K' + bar + ' ' + name + suffix)
     }
   }
