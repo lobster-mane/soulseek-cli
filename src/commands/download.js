@@ -6,7 +6,7 @@ import CredentialsService from '../services/CredentialsService.js';
 const log = console.log;
 
 // Available file modes
-const modes = ['mp3', 'flac', 'mp4', 'mkv'];
+const modes = ['audio', 'video', 'mp3', 'flac', 'mp4', 'mkv'];
 
 class DownloadCommand {
   constructor(queries, options) {
@@ -20,7 +20,7 @@ class DownloadCommand {
       process.exit(1);
     }
 
-    if (!['mp3', 'flac'].includes(options.mode) && options.quality) {
+    if (!['audio', 'mp3', 'flac'].includes(options.mode) && options.quality) {
       log(chalk.red(`--quality is incompatible with the "${options.mode}" mode. Please remove this option.`));
       process.exit(1);
     }

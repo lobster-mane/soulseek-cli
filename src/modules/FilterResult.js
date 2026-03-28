@@ -16,21 +16,15 @@ export default function (qualityFilter, mode) {
   this.filter = (res) => {
     res = filterByFreeSlot(res);
 
-    if (this.mode === 'mp3') {
-      res = keepOnlyMp3(res);
-    }
-
-    if (this.mode === 'flac') {
-      res = keepOnlyFlac(res);
-    }
-
-    if (this.mode === 'mp4') {
-      res = keepOnlyMp4(res);
-    }
-
-    if (this.mode === 'mkv') {
-      res = keepOnlyMkv(res);
-    }
+    const modeExtensions = {
+      audio: ['.mp3', '.flac'],
+      video: ['.mp4', '.mkv'],
+      mp3: ['.mp3'],
+      flac: ['.flac'],
+      mp4: ['.mp4'],
+      mkv: ['.mkv'],
+    };
+    res = res.filter((r) => modeExtensions[this.mode].includes(path.extname(r.file)));
 
     if (this.qualityFilter) {
       res = filterByQuality(this.qualityFilter, res);
@@ -61,20 +55,6 @@ let keepOnlyMp3 = (res) => res.filter((r) => path.extname(r.file) === '.mp3');
  * @returns {array}
  */
 let keepOnlyFlac = (res) => res.filter((r) => path.extname(r.file) === '.flac');
-
-/**
- * Remove everything that is not a mp4
- * @param {array} res
- * @returns {array}
- */
-let keepOnlyMp4 = (res) => res.filter((r) => path.extname(r.file) === '.mp4');
-
-/**
- * Remove everything that is not a mkv
- * @param {array} res
- * @returns {array}
- */
-let keepOnlyMkv = (res) => res.filter((r) => path.extname(r.file) === '.mkv');
 
 /**
  * If a quality filter is defined, keep only the folders with the defined bitrate
