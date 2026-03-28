@@ -10,6 +10,13 @@ export default function (destination) {
    * @param  {string} directory
    * @return {string}
    */
+  this.getBaseDirectory = () => {
+    if (this.destination) {
+      return path.isAbsolute(this.destination) ? this.destination : path.resolve(this.destination);
+    }
+    return process.cwd();
+  };
+
   this.getDestinationDirectory = (directory) => {
     let dir;
 

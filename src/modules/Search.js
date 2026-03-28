@@ -110,8 +110,10 @@ export default function (searchService, downloadService, options, client) {
   this.showResults = (filesByUser) => {
     const choices = _.keys(filesByUser);
 
-    log(chalk.green('Displaying ' + choices.length + ' search results'));
-    choices.forEach((choice, index) => log(chalk.blue('%d) %s'), index + 1, choice));
+    if (this.verbose) {
+      log(chalk.green('Displaying ' + choices.length + ' search results'));
+      choices.forEach((choice, index) => log(chalk.blue('%d) %s'), index + 1, choice));
+    }
 
     const prompt = {
       type: 'input',

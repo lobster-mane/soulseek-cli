@@ -7,8 +7,8 @@ export default function (searchService) {
   this.downloadingFilesCount = 0;
   this.downloadCompleteCount = 0;
 
-  this.prepareDownload = (files) => {
-    this.downloadLogger.startDownload(files.length);
+  this.prepareDownload = (files, baseDir) => {
+    this.downloadLogger.startDownload(files.length, baseDir);
     this.downloadingFilesCount += files.length;
   };
 

@@ -17,7 +17,7 @@ export default function (downloadService, searchService, options, client) {
    * @param {array} files
    */
   this.startDownloads = (files) => {
-    this.downloadService.prepareDownload(files);
+    this.downloadService.prepareDownload(files, this.destinationDirectory.getBaseDirectory());
     files.forEach((file) => this.downloadFile(file));
   };
 
