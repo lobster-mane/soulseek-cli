@@ -13,6 +13,7 @@ export default function (searchService, downloadService, options, client) {
   this.client = client;
   this.timeout = options.timeout ?? 2000;
   this.showPrompt = options.showPrompt ?? true;
+  this.verbose = options.verbose ?? false;
 
   /**
    * Launch search query, then call a callback
@@ -39,10 +40,16 @@ export default function (searchService, downloadService, options, client) {
     const filesByUser = this.filterResult.filter(res);
     this.checkEmptyResult(filesByUser);
 
+    if (this.verbose && !this.showPrompt) {
+      this.printAllResults(filesByUser);
+    }
+
     if (this.showPrompt) {
       this.showResults(filesByUser);
     } else {
-      this.showTopResult(filesByUser);
+      if (!this.verbose) {
+        this.showTopResult(filesByUser);
+      }
       process.exit(0);
     }
   };
@@ -65,6 +72,19 @@ export default function (searchService, downloadService, options, client) {
     } else {
       log(chalk.green('Search finished'));
     }
+  };
+
+  /**
+   * Print all results to the screen
+   *
+   * @param {object} filesByUser
+   */
+  this.printAllResults = (filesByUser) => {
+    const results = _.keys(filesByUser);
+    log(chalk.green('Search returned ' + results.length + ' results'));
+    results.forEach((result, index) => {
+      log(chalk.blue('%d. %s'), index + 1, result);
+    });
   };
 
   /**
